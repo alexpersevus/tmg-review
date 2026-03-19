@@ -170,6 +170,26 @@ body {
   font-size: 16px;
 }
 
+.undo-bar {
+  display: none;
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 50;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: fadeIn 0.2s;
+}
+.undo-bar.show { display: block; }
+.undo-bar span { color: #4a9eff; font-weight: 600; margin-left: 6px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
 .empty-state { text-align: center; padding: 40px; }
 .empty-state h2 { margin-bottom: 8px; }
 .empty-state p { color: #888; }
@@ -254,6 +274,8 @@ body {
   <button class="action-btn btn-confirm" onclick="handleAction('confirm')">&#10003;</button>
 </div>
 
+<div class="undo-bar" id="undo-bar" onclick="undoAction()">Undo<span id="undo-name"></span></div>
+
 <div class="modal-overlay" id="flag-modal">
   <div class="modal">
     <h3 id="modal-name"></h3>
@@ -274,6 +296,7 @@ let db;
 let contacts = [];
 let currentIndex = 0;
 let sessionStats = { confirmed: 0, removed: 0, flagged: 0 };
+let lastAction = null; // { contactId, action, index }
 
 async function init() {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -569,7 +592,42 @@ async function handleAction(action, note) {
   else if (action === 'remove') sessionStats.removed++;
   else sessionStats.flagged++;
 
-  setTimeout(() => { currentIndex++; renderCard(); }, 300);
+  lastAction = { contactId: c.id, action: action, index: currentIndex, name: (c.first_name || '') + ' ' + (c.last_name || '') };
+
+  setTimeout(() => {
+    currentIndex++;
+    renderCard();
+    // Show undo bar
+    const undo = document.getElementById('undo-bar');
+    document.getElementById('undo-name').textContent = lastAction.name;
+    undo.classList.add('show');
+    // Auto-hide after 5 seconds
+    clearTimeout(window._undoTimer);
+    window._undoTimer = setTimeout(() => { undo.classList.remove('show'); }, 5000);
+  }, 300);
+}
+
+async function undoAction() {
+  if (!lastAction) return;
+
+  // Delete the last review action from DB
+  await db.from('review_actions')
+    .delete()
+    .eq('contact_id', lastAction.contactId)
+    .eq('action', lastAction.action)
+    .order('reviewed_at', { ascending: false })
+    .limit(1);
+
+  // Reverse the stat
+  if (lastAction.action === 'confirm') sessionStats.confirmed--;
+  else if (lastAction.action === 'remove') sessionStats.removed--;
+  else sessionStats.flagged--;
+
+  // Go back
+  currentIndex = lastAction.index;
+  lastAction = null;
+  document.getElementById('undo-bar').classList.remove('show');
+  renderCard();
 }
 
 init();
