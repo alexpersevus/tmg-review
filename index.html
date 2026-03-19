@@ -322,7 +322,7 @@ async function loadContacts() {
           )
         `)
         .not('narrative', 'is', null)
-        .order('last_interaction', { ascending: false, nullsFirst: false })
+        .order('contact_id', { ascending: true })
         .range(from, from + batchSize - 1);
 
       if (error) {
@@ -347,6 +347,17 @@ async function loadContacts() {
       if (!data || data.length < batchSize) hasMore = false;
       else from += batchSize;
     }
+
+    // Sort alphabetically by last name
+    allData.sort((a, b) => {
+      const la = (a.last_name || '').toLowerCase();
+      const lb = (b.last_name || '').toLowerCase();
+      if (la < lb) return -1;
+      if (la > lb) return 1;
+      const fa = (a.first_name || '').toLowerCase();
+      const fb = (b.first_name || '').toLowerCase();
+      return fa < fb ? -1 : fa > fb ? 1 : 0;
+    });
 
     contacts = allData.filter(c => {
       const first = (c.first_name || '').trim();
