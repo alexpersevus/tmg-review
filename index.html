@@ -96,6 +96,10 @@ body {
 }
 .badge.current_client { background: #0d52; color: #0d5; border: 1px solid #0d5; }
 .badge.past_client { background: #fa02; color: #fa0; border: 1px solid #fa0; }
+.badge.warm_lead { background: #4a9eff22; color: #4a9eff; border: 1px solid #4a9eff; }
+.badge.cold_lead { background: #88888822; color: #888; border: 1px solid #555; }
+.badge.referral { background: #a855f722; color: #a855f7; border: 1px solid #a855f7; }
+.badge.internal { background: #66666622; color: #666; border: 1px solid #444; }
 .badge.prospect { background: #4a9eff22; color: #4a9eff; border: 1px solid #4a9eff; }
 
 .card-info {
@@ -354,15 +358,24 @@ function renderCard() {
   const phone = c.mobile_phone || c.phone || c.business_phone || '';
   const company = c.company || c.employer || '';
 
-  let badgeClass = c.client_status || 'prospect';
+  // Badge priority: invoicing data > AI classification
+  let badgeClass = '';
   let badgeText = '';
   if (c.client_status === 'current_client') {
     badgeText = 'Client' + (c.client_years_active ? ' · ' + c.client_years_active + ' yrs' : '');
+    badgeClass = 'current_client';
   } else if (c.client_status === 'past_client') {
     badgeText = 'Past Client' + (c.client_last_invoiced ? ' · last ' + c.client_last_invoiced : '');
+    badgeClass = 'past_client';
   } else if (intel && intel.relationship_status && intel.relationship_status !== 'unknown') {
     badgeText = intel.relationship_status.replace(/_/g, ' ');
-    badgeClass = 'prospect';
+    // Color by type
+    if (intel.relationship_status === 'active_client') badgeClass = 'current_client';
+    else if (intel.relationship_status === 'warm_lead') badgeClass = 'warm_lead';
+    else if (intel.relationship_status === 'cold_lead') badgeClass = 'cold_lead';
+    else if (intel.relationship_status === 'referral_source') badgeClass = 'referral';
+    else if (intel.relationship_status === 'internal') badgeClass = 'internal';
+    else badgeClass = 'prospect';
   }
 
   // Build meta line
