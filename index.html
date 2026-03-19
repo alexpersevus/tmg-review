@@ -20,33 +20,43 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background: #111;
-  border-bottom: 1px solid #222;
 }
-.header h1 { font-size: 18px; font-weight: 600; }
-.counter { font-size: 14px; color: #888; }
+.header h1 { font-size: 16px; font-weight: 600; }
+.counter { font-size: 13px; color: #888; }
+
+.progress-bar {
+  height: 3px;
+  background: #222;
+}
+.progress-fill {
+  height: 100%;
+  background: #4a9eff;
+  transition: width 0.3s;
+}
 
 .card-container {
   position: relative;
-  height: calc(100dvh - 56px - 80px);
+  height: calc(100dvh - 39px - 3px - 70px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 16px;
+  padding: 8px 12px;
+  overflow: hidden;
 }
 
 .card {
   width: 100%;
   max-width: 400px;
   background: #1a1a1a;
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid #333;
   overflow-y: auto;
   max-height: 100%;
   position: relative;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  touch-action: none;
+  touch-action: pan-y;
 }
 .card.swiping { transition: none; }
 .card.swipe-right { transform: translateX(150%) rotate(15deg); opacity: 0; }
@@ -55,182 +65,163 @@ body {
 
 .swipe-indicator {
   position: absolute;
-  top: 20px;
-  padding: 8px 20px;
+  top: 12px;
+  padding: 6px 16px;
   border-radius: 8px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   opacity: 0;
-  transition: opacity 0.1s;
   z-index: 10;
   pointer-events: none;
 }
-.swipe-indicator.right { right: 20px; background: #0d5; color: #000; }
-.swipe-indicator.left { left: 20px; background: #f44; color: #fff; }
+.swipe-indicator.right { right: 12px; background: #0d5; color: #000; }
+.swipe-indicator.left { left: 12px; background: #f44; color: #fff; }
 .swipe-indicator.up { left: 50%; transform: translateX(-50%); background: #fa0; color: #000; }
 
-.card-header {
-  padding: 20px 20px 12px;
+.card-top {
+  padding: 14px 16px 10px;
   border-bottom: 1px solid #2a2a2a;
 }
-.card-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.card-header .company { font-size: 16px; color: #4a9eff; }
-.card-header .title { font-size: 14px; color: #888; margin-top: 2px; }
+.card-top h2 { font-size: 20px; font-weight: 700; line-height: 1.2; }
+.card-top .meta { font-size: 13px; color: #888; margin-top: 2px; }
+.card-top .meta .company { color: #4a9eff; }
 
-.client-badge {
+.badge {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: 8px;
-}
-.client-badge.current_client { background: #0d52; color: #0d5; border: 1px solid #0d5; }
-.client-badge.past_client { background: #fa02; color: #fa0; border: 1px solid #fa0; }
-.client-badge.prospect { background: #4a9eff22; color: #4a9eff; border: 1px solid #4a9eff; }
-
-.card-body { padding: 16px 20px; }
-
-.info-row {
-  display: flex;
-  align-items: flex-start;
-  padding: 6px 0;
-  font-size: 14px;
-}
-.info-label { color: #666; width: 80px; flex-shrink: 0; }
-.info-value { color: #ccc; word-break: break-all; }
-.info-value a { color: #4a9eff; text-decoration: none; }
-
-.narrative-section {
-  margin-top: 12px;
-  padding: 12px;
-  background: #111;
+  padding: 2px 8px;
   border-radius: 10px;
-  border: 1px solid #2a2a2a;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 6px;
 }
-.narrative-section h3 {
+.badge.current_client { background: #0d52; color: #0d5; border: 1px solid #0d5; }
+.badge.past_client { background: #fa02; color: #fa0; border: 1px solid #fa0; }
+.badge.prospect { background: #4a9eff22; color: #4a9eff; border: 1px solid #4a9eff; }
+
+.card-info {
+  padding: 8px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
   font-size: 13px;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
+  border-bottom: 1px solid #2a2a2a;
 }
-.narrative-text {
+.card-info a { color: #4a9eff; text-decoration: none; }
+.card-info .item { color: #999; }
+.card-info .item span { color: #ccc; }
+
+.intel {
+  padding: 10px 16px 14px;
   font-size: 14px;
   line-height: 1.5;
-  color: #bbb;
+  color: #ccc;
 }
-
-.note-section {
-  margin-top: 12px;
-  padding: 12px;
-  background: #0a1a0a;
-  border-radius: 10px;
-  border: 1px solid #1a3a1a;
-}
-.note-section h3 {
-  font-size: 13px;
-  color: #0d5;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-.note-input {
-  width: 100%;
-  min-height: 60px;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 15px;
-  padding: 10px;
-  resize: vertical;
-  font-family: inherit;
-}
-.note-input::placeholder { color: #555; }
 
 .actions {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background: #111;
   border-top: 1px solid #222;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  height: 70px;
 }
 
 .action-btn {
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   border: 2px solid;
   background: transparent;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s, background 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .action-btn:active { transform: scale(0.9); }
 .btn-remove { border-color: #f44; color: #f44; }
-.btn-remove:active { background: #f442; }
 .btn-edit { border-color: #fa0; color: #fa0; }
-.btn-edit:active { background: #fa02; }
 .btn-confirm { border-color: #0d5; color: #0d5; }
-.btn-confirm:active { background: #0d52; }
 
 .loading {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100dvh - 56px - 80px);
+  height: 100%;
   color: #666;
   font-size: 16px;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 40px;
-}
+.empty-state { text-align: center; padding: 40px; }
 .empty-state h2 { margin-bottom: 8px; }
 .empty-state p { color: #888; }
 
-.filter-bar {
-  display: flex;
-  gap: 8px;
-  padding: 8px 16px;
-  background: #111;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+/* Flag modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
-.filter-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: #1a1a1a;
+  border-radius: 16px;
   border: 1px solid #333;
-  background: transparent;
+  width: 100%;
+  max-width: 360px;
+  padding: 24px 20px;
+}
+.modal h3 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.modal p {
+  font-size: 14px;
   color: #888;
-  font-size: 13px;
-  white-space: nowrap;
+  margin-bottom: 16px;
+}
+.modal textarea {
+  width: 100%;
+  min-height: 100px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  padding: 12px;
+  font-family: inherit;
+  resize: none;
+}
+.modal textarea::placeholder { color: #555; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.modal-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.filter-btn.active { background: #4a9eff22; color: #4a9eff; border-color: #4a9eff; }
-
-.stats-bar {
-  display: flex;
-  gap: 16px;
-  padding: 6px 16px;
-  background: #0a0a0a;
-  font-size: 12px;
-  color: #555;
-  border-bottom: 1px solid #1a1a1a;
-}
-.stat-item span { color: #888; }
+.modal-btn.cancel { background: #333; color: #999; }
+.modal-btn.submit { background: #fa0; color: #000; }
 </style>
 </head>
 <body>
@@ -239,29 +230,28 @@ body {
   <h1>TMG Review</h1>
   <div class="counter" id="counter">Loading...</div>
 </div>
-
-<div class="filter-bar" id="filters">
-  <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="has_narrative">Has Intel</button>
-  <button class="filter-btn" data-filter="current_client">Clients</button>
-  <button class="filter-btn" data-filter="past_client">Past Clients</button>
-  <button class="filter-btn" data-filter="unknown">Unreviewed</button>
-</div>
-
-<div class="stats-bar" id="stats-bar">
-  <div class="stat-item">Confirmed: <span id="stat-confirmed">0</span></div>
-  <div class="stat-item">Removed: <span id="stat-removed">0</span></div>
-  <div class="stat-item">Flagged: <span id="stat-flagged">0</span></div>
-</div>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
 
 <div class="card-container" id="card-container">
   <div class="loading" id="loading">Loading contacts...</div>
 </div>
 
 <div class="actions">
-  <button class="action-btn btn-remove" onclick="handleAction('remove')" title="Remove">&#10005;</button>
-  <button class="action-btn btn-edit" onclick="handleAction('flag')" title="Needs Update">&#9888;</button>
-  <button class="action-btn btn-confirm" onclick="handleAction('confirm')" title="Confirmed">&#10003;</button>
+  <button class="action-btn btn-remove" onclick="handleAction('remove')">&#10005;</button>
+  <button class="action-btn btn-edit" onclick="showFlagModal()">&#9888;</button>
+  <button class="action-btn btn-confirm" onclick="handleAction('confirm')">&#10003;</button>
+</div>
+
+<div class="modal-overlay" id="flag-modal">
+  <div class="modal">
+    <h3 id="modal-name"></h3>
+    <p>What should we know about this contact?</p>
+    <textarea id="flag-note" placeholder="Tap here and dictate what's wrong or what needs updating..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeFlagModal()">Cancel</button>
+      <button class="modal-btn submit" onclick="submitFlag()">Flag It</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -271,24 +261,15 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let db;
 let contacts = [];
 let currentIndex = 0;
-let currentFilter = 'all';
 let sessionStats = { confirmed: 0, removed: 0, flagged: 0 };
 
 async function init() {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // Create review_actions table if needed (will fail silently if exists)
   await loadContacts();
-  setupSwipeGestures();
-  setupFilterButtons();
 }
 
 async function loadContacts() {
-  document.getElementById('loading').style.display = 'flex';
-  document.getElementById('loading').textContent = 'Loading contacts...';
-
   try {
-    // Load in batches of 1000 (Supabase default limit)
     let allData = [];
     let from = 0;
     const batchSize = 1000;
@@ -302,9 +283,7 @@ async function loadContacts() {
           contacts (
             id, first_name, last_name, nickname, email, phone, mobile_phone, business_phone,
             company, employer, job_title, nominator, linkedin_url,
-            business_address, city, state, date_of_birth, gender, marital_status, spouse_name,
-            lifecycle_stage, lead_status, notes,
-            client_status, client_company_match, client_first_invoiced, client_last_invoiced, client_years_active
+            client_status, client_years_active, client_last_invoiced
           )
         `)
         .not('narrative', 'is', null)
@@ -312,12 +291,11 @@ async function loadContacts() {
         .range(from, from + batchSize - 1);
 
       if (error) {
-        const errEl = document.getElementById('loading');
-        if (errEl) errEl.textContent = 'Error: ' + error.message;
+        const el = document.getElementById('loading');
+        if (el) el.textContent = 'Error: ' + error.message;
         return;
       }
 
-      // Reshape: move contact fields to top level, intel as nested
       const reshaped = (data || []).map(row => {
         const c = row.contacts || {};
         c.contact_intel = {
@@ -330,97 +308,40 @@ async function loadContacts() {
         return c;
       }).filter(c => c.id);
       allData = allData.concat(reshaped);
-      const loadEl = document.getElementById('loading');
-      if (loadEl) loadEl.textContent = 'Loaded ' + allData.length + ' contacts...';
 
-      if (!data || data.length < batchSize) {
-        hasMore = false;
-      } else {
-        from += batchSize;
-      }
+      if (!data || data.length < batchSize) hasMore = false;
+      else from += batchSize;
     }
 
-    // Filter out junk contacts (phone numbers as names, no real name, etc.)
     contacts = allData.filter(c => {
       const first = (c.first_name || '').trim();
       const last = (c.last_name || '').trim();
-      // Skip if no name at all
       if (!first && !last) return false;
-      // Skip if last name is just a phone number
       if (/^\d{7,}$/.test(last.replace(/\D/g, ''))) return false;
-      // Skip if name is just a single character
-      if (first.length <= 1 && last.length <= 1) return false;
       return true;
     });
-    applyFilter();
+
+    renderCard();
   } catch (err) {
-    const errEl2 = document.getElementById('loading');
-    if (errEl2) errEl2.textContent = 'Error: ' + err.message;
+    const el = document.getElementById('loading');
+    if (el) el.textContent = 'Error: ' + err.message;
   }
-}
-
-function applyFilter() {
-  let filtered;
-  switch (currentFilter) {
-    case 'has_narrative':
-      filtered = contacts.filter(c => {
-        const ci = c.contact_intel;
-        if (!ci) return false;
-        const intel = Array.isArray(ci) ? ci[0] : ci;
-        return intel && intel.narrative;
-      });
-      break;
-    case 'current_client':
-      filtered = contacts.filter(c => c.client_status === 'current_client');
-      break;
-    case 'past_client':
-      filtered = contacts.filter(c => c.client_status === 'past_client');
-      break;
-    case 'unknown':
-      filtered = contacts.filter(c => {
-        const ci = c.contact_intel;
-        if (!ci) return true;
-        const intel = Array.isArray(ci) ? ci[0] : ci;
-        return !intel || intel.relationship_status === 'unknown';
-      });
-      break;
-    default:
-      filtered = contacts;
-  }
-
-  contacts._filtered = filtered;
-  currentIndex = 0;
-  renderCard();
-}
-
-function setupFilterButtons() {
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      applyFilter();
-    });
-  });
 }
 
 function renderCard() {
   const container = document.getElementById('card-container');
-  const filtered = contacts._filtered || contacts;
+  const total = contacts.length;
 
   document.getElementById('counter').textContent =
-    (currentIndex + 1) + ' / ' + filtered.length;
+    (currentIndex + 1) + ' / ' + total + '  (' + sessionStats.confirmed + '✓ ' + sessionStats.removed + '✗ ' + sessionStats.flagged + '⚑)';
+  document.getElementById('progress').style.width = (total > 0 ? ((currentIndex / total) * 100) : 0) + '%';
 
-  document.getElementById('stat-confirmed').textContent = sessionStats.confirmed;
-  document.getElementById('stat-removed').textContent = sessionStats.removed;
-  document.getElementById('stat-flagged').textContent = sessionStats.flagged;
-
-  if (filtered.length === 0 || currentIndex >= filtered.length) {
-    container.innerHTML = '<div class="empty-state"><h2>All done!</h2><p>No more contacts to review in this filter.</p></div>';
+  if (total === 0 || currentIndex >= total) {
+    container.innerHTML = '<div class="empty-state"><h2>All done!</h2><p>No more contacts to review.</p></div>';
     return;
   }
 
-  const c = filtered[currentIndex];
+  const c = contacts[currentIndex];
   const intel = c.contact_intel ? (Array.isArray(c.contact_intel) ? c.contact_intel[0] : c.contact_intel) : null;
   const phone = c.mobile_phone || c.phone || c.business_phone || '';
   const company = c.company || c.employer || '';
@@ -436,73 +357,41 @@ function renderCard() {
     badgeClass = 'prospect';
   }
 
+  // Build meta line
+  let metaParts = [];
+  if (company) metaParts.push('<span class="company">' + esc(company) + '</span>');
+  if (c.job_title) metaParts.push(esc(c.job_title));
+
+  // Build info items
+  let infoItems = '';
+  if (c.email) infoItems += '<div class="item"><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></div>';
+  if (phone) infoItems += '<div class="item"><a href="tel:' + esc(phone) + '">' + esc(phone) + '</a></div>';
+  if (c.linkedin_url) infoItems += '<div class="item"><a href="' + esc(c.linkedin_url) + '" target="_blank">LinkedIn</a></div>';
+  if (intel && intel.last_interaction) infoItems += '<div class="item">Last: <span>' + esc(intel.last_interaction) + '</span></div>';
+
   let html = `
     <div class="card" id="active-card">
       <div class="swipe-indicator right" id="ind-right">CONFIRM</div>
       <div class="swipe-indicator left" id="ind-left">REMOVE</div>
       <div class="swipe-indicator up" id="ind-up">FLAG</div>
 
-      <div class="card-header">
+      <div class="card-top">
         <h2>${esc(c.first_name || '')} ${esc(c.last_name || '')}</h2>
-        ${company ? '<div class="company">' + esc(company) + '</div>' : ''}
-        ${c.job_title ? '<div class="title">' + esc(c.job_title) + '</div>' : ''}
-        ${badgeText ? '<div class="client-badge ' + badgeClass + '">' + esc(badgeText) + '</div>' : ''}
+        ${metaParts.length ? '<div class="meta">' + metaParts.join(' · ') + '</div>' : ''}
+        ${badgeText ? '<div class="badge ' + badgeClass + '">' + esc(badgeText) + '</div>' : ''}
       </div>
 
-      <div class="card-body">`;
+      <div class="card-info">${infoItems}</div>
 
-  // Data completeness dots
-  let dots = '';
-  dots += '<span style="color:' + (c.email ? '#0d5' : '#333') + '">Email</span> · ';
-  dots += '<span style="color:' + (phone ? '#0d5' : '#333') + '">Phone</span> · ';
-  dots += '<span style="color:' + (c.linkedin_url ? '#0d5' : '#333') + '">LinkedIn</span> · ';
-  dots += '<span style="color:' + (intel && intel.narrative ? '#0d5' : '#333') + '">Intel</span>';
-  html += '<div style="font-size:11px;padding:4px 0 8px;border-bottom:1px solid #2a2a2a;margin-bottom:8px">' + dots + '</div>';
-
-  if (c.nickname) html += infoRow('Nickname', esc(c.nickname));
-  if (c.email) html += infoRow('Email', '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>');
-  if (phone) html += infoRow('Phone', '<a href="tel:' + esc(phone) + '">' + esc(phone) + '</a>');
-  if (c.linkedin_url) html += infoRow('LinkedIn', '<a href="' + esc(c.linkedin_url) + '" target="_blank">Profile</a>');
-  if (c.business_address) html += infoRow('Address', esc(c.business_address));
-  if (c.nominator) html += infoRow('Referred', esc(c.nominator));
-  if (c.date_of_birth) html += infoRow('Birthday', esc(c.date_of_birth));
-  if (c.spouse_name) html += infoRow('Spouse', esc(c.spouse_name));
-  if (c.marital_status) html += infoRow('Status', esc(c.marital_status));
-  if (c.notes) html += infoRow('Notes', esc(c.notes.substring(0, 200)) + (c.notes.length > 200 ? '...' : ''));
-  if (intel && intel.last_interaction) html += infoRow('Last Touch', esc(intel.last_interaction));
-  if (intel && intel.email_count) html += infoRow('Emails', esc(String(intel.email_count)));
-
-  if (intel && intel.narrative) {
-    html += `
-        <div class="narrative-section">
-          <h3>Intel Brief</h3>
-          <div class="narrative-text">${formatNarrative(intel.narrative)}</div>
-        </div>`;
-  }
-
-  html += `
-        <div class="note-section">
-          <h3>Voice Note / Comment</h3>
-          <textarea class="note-input" id="note-input" placeholder="Tap here and use dictation to add notes..."></textarea>
-        </div>
-      </div>
+      <div class="intel">${intel && intel.narrative ? formatNarrative(intel.narrative) : '<span style="color:#555">No intel available</span>'}</div>
     </div>`;
 
   container.innerHTML = html;
-  const loadEl2 = document.getElementById('loading');
-  if (loadEl2) loadEl2.style.display = 'none';
   setupSwipeGestures();
 }
 
-function infoRow(label, value) {
-  return '<div class="info-row"><div class="info-label">' + label + '</div><div class="info-value">' + value + '</div></div>';
-}
-
 function formatNarrative(text) {
-  return esc(text)
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n- /g, '<br>• ')
-    .replace(/\n/g, '<br>');
+  return esc(text).replace(/\n/g, '<br>');
 }
 
 function esc(s) {
@@ -511,13 +400,12 @@ function esc(s) {
   return d.innerHTML;
 }
 
-// --- Swipe Gestures ---
+// --- Swipe ---
 let startX, startY, isDragging = false;
 
 function setupSwipeGestures() {
   const card = document.getElementById('active-card');
   if (!card) return;
-
   card.addEventListener('touchstart', onTouchStart, { passive: true });
   card.addEventListener('touchmove', onTouchMove, { passive: false });
   card.addEventListener('touchend', onTouchEnd);
@@ -525,8 +413,6 @@ function setupSwipeGestures() {
 }
 
 function onTouchStart(e) {
-  // Don't start swipe if touching the textarea
-  if (e.target.closest('.note-input')) return;
   const t = e.touches[0];
   startX = t.clientX;
   startY = t.clientY;
@@ -537,12 +423,9 @@ function onTouchStart(e) {
 
 function onTouchMove(e) {
   if (!isDragging) return;
-  if (e.target.closest('.note-input')) return;
   e.preventDefault();
   const t = e.touches[0];
-  const dx = t.clientX - startX;
-  const dy = t.clientY - startY;
-  updateCardPosition(dx, dy);
+  updateCardPosition(t.clientX - startX, t.clientY - startY);
 }
 
 function onTouchEnd(e) {
@@ -551,32 +434,22 @@ function onTouchEnd(e) {
   const card = document.getElementById('active-card');
   if (!card) return;
   card.classList.remove('swiping');
-
   const t = e.changedTouches[0];
   const dx = t.clientX - startX;
   const dy = t.clientY - startY;
-
   if (dx > 100) handleAction('confirm');
   else if (dx < -100) handleAction('remove');
-  else if (dy < -100) handleAction('flag');
-  else {
-    card.style.transform = '';
-    hideIndicators();
-  }
+  else if (dy < -100) showFlagModal();
+  else { card.style.transform = ''; hideIndicators(); }
 }
 
 function onMouseDown(e) {
-  if (e.target.closest('.note-input')) return;
   startX = e.clientX;
   startY = e.clientY;
   isDragging = true;
   const card = document.getElementById('active-card');
   if (card) card.classList.add('swiping');
-
-  const onMove = (ev) => {
-    if (!isDragging) return;
-    updateCardPosition(ev.clientX - startX, ev.clientY - startY);
-  };
+  const onMove = (ev) => { if (isDragging) updateCardPosition(ev.clientX - startX, ev.clientY - startY); };
   const onUp = (ev) => {
     isDragging = false;
     document.removeEventListener('mousemove', onMove);
@@ -588,11 +461,8 @@ function onMouseDown(e) {
     const dy = ev.clientY - startY;
     if (dx > 100) handleAction('confirm');
     else if (dx < -100) handleAction('remove');
-    else if (dy < -100) handleAction('flag');
-    else {
-      card.style.transform = '';
-      hideIndicators();
-    }
+    else if (dy < -100) showFlagModal();
+    else { card.style.transform = ''; hideIndicators(); }
   };
   document.addEventListener('mousemove', onMove);
   document.addEventListener('mouseup', onUp);
@@ -601,17 +471,13 @@ function onMouseDown(e) {
 function updateCardPosition(dx, dy) {
   const card = document.getElementById('active-card');
   if (!card) return;
-
-  const rot = dx * 0.05;
-  card.style.transform = 'translateX(' + dx + 'px) translateY(' + Math.min(dy, 0) + 'px) rotate(' + rot + 'deg)';
-
-  const indRight = document.getElementById('ind-right');
-  const indLeft = document.getElementById('ind-left');
-  const indUp = document.getElementById('ind-up');
-
-  if (indRight) indRight.style.opacity = Math.max(0, Math.min(1, dx / 100));
-  if (indLeft) indLeft.style.opacity = Math.max(0, Math.min(1, -dx / 100));
-  if (indUp) indUp.style.opacity = Math.max(0, Math.min(1, -dy / 100));
+  card.style.transform = 'translateX(' + dx + 'px) translateY(' + Math.min(dy, 0) + 'px) rotate(' + (dx * 0.05) + 'deg)';
+  const r = document.getElementById('ind-right');
+  const l = document.getElementById('ind-left');
+  const u = document.getElementById('ind-up');
+  if (r) r.style.opacity = Math.max(0, Math.min(1, dx / 100));
+  if (l) l.style.opacity = Math.max(0, Math.min(1, -dx / 100));
+  if (u) u.style.opacity = Math.max(0, Math.min(1, -dy / 100));
 }
 
 function hideIndicators() {
@@ -621,13 +487,32 @@ function hideIndicators() {
   });
 }
 
-// --- Actions ---
-async function handleAction(action) {
-  const filtered = contacts._filtered || contacts;
-  if (currentIndex >= filtered.length) return;
+// --- Flag Modal ---
+function showFlagModal() {
+  const c = contacts[currentIndex];
+  if (!c) return;
+  document.getElementById('modal-name').textContent = (c.first_name || '') + ' ' + (c.last_name || '');
+  document.getElementById('flag-note').value = '';
+  document.getElementById('flag-modal').classList.add('show');
+  setTimeout(() => document.getElementById('flag-note').focus(), 100);
+}
 
-  const c = filtered[currentIndex];
-  const note = (document.getElementById('note-input') || {}).value || '';
+function closeFlagModal() {
+  document.getElementById('flag-modal').classList.remove('show');
+  const card = document.getElementById('active-card');
+  if (card) { card.style.transform = ''; hideIndicators(); }
+}
+
+function submitFlag() {
+  const note = document.getElementById('flag-note').value;
+  document.getElementById('flag-modal').classList.remove('show');
+  handleAction('flag', note);
+}
+
+// --- Actions ---
+async function handleAction(action, note) {
+  if (currentIndex >= contacts.length) return;
+  const c = contacts[currentIndex];
 
   const card = document.getElementById('active-card');
   if (card) {
@@ -637,7 +522,6 @@ async function handleAction(action) {
     else card.classList.add('swipe-up');
   }
 
-  // Save review action
   await db.from('review_actions').insert({
     contact_id: c.id,
     action: action,
@@ -645,19 +529,13 @@ async function handleAction(action) {
     reviewed_at: new Date().toISOString()
   });
 
-  // Update stats
   if (action === 'confirm') sessionStats.confirmed++;
   else if (action === 'remove') sessionStats.removed++;
   else sessionStats.flagged++;
 
-  // Next card after animation
-  setTimeout(() => {
-    currentIndex++;
-    renderCard();
-  }, 300);
+  setTimeout(() => { currentIndex++; renderCard(); }, 300);
 }
 
-// --- Init ---
 init();
 </script>
 </body>
