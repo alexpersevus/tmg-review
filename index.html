@@ -401,14 +401,14 @@ function renderCard() {
   } else if (c.client_status === 'past_client') {
     badgeText = 'Past Client' + (c.client_last_invoiced ? ' · last ' + c.client_last_invoiced : '');
     badgeClass = 'past_client';
-  } else if (intel && intel.relationship_status && intel.relationship_status !== 'unknown') {
+  } else if (intel && intel.relationship_status) {
     badgeText = intel.relationship_status.replace(/_/g, ' ');
-    // Color by type
     if (intel.relationship_status === 'active_client') badgeClass = 'current_client';
     else if (intel.relationship_status === 'warm_lead') badgeClass = 'warm_lead';
     else if (intel.relationship_status === 'cold_lead') badgeClass = 'cold_lead';
     else if (intel.relationship_status === 'referral_source') badgeClass = 'referral';
     else if (intel.relationship_status === 'internal') badgeClass = 'internal';
+    else if (intel.relationship_status === 'unknown') badgeClass = 'cold_lead';
     else badgeClass = 'prospect';
   }
 
