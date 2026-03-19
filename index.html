@@ -265,6 +265,21 @@ body {
 }
 .onboarding .start-btn:active { opacity: 0.8; }
 
+.ob-page { min-height: calc(100dvh - 80px); }
+.ob-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.ob-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #333;
+}
+.ob-dots span.active { background: #4a9eff; }
+
 .empty-state { text-align: center; padding: 40px; }
 .empty-state h2 { margin-bottom: 8px; }
 .empty-state p { color: #888; }
@@ -335,40 +350,65 @@ body {
 
 <div class="onboarding-overlay" id="onboarding">
   <div class="onboarding">
-    <h1>TMG Contact Review</h1>
-    <div class="subtitle">We pulled your contacts from HubSpot and cross-referenced them with your email history to build intel briefs. Now we need you to review them.</div>
-
-    <h2>How it works</h2>
-
-    <div class="step">
-      <div class="step-icon" style="border-color:#0d5;color:#0d5">&#10003;</div>
-      <div class="step-text"><strong>Swipe right or tap green</strong> — this contact and their info look good. Confirmed.</div>
+    <!-- Page 1 -->
+    <div class="ob-page" id="ob-page-1">
+      <h1>Hey Byron</h1>
+      <div class="subtitle">We went through your HubSpot contacts, email history, and invoicing records and built a quick intel brief on each person.</div>
+      <div class="subtitle">Now we need your help with one simple question on each contact:</div>
+      <div style="text-align:center;font-size:22px;font-weight:700;color:#4a9eff;padding:20px 0 24px;line-height:1.4">Should this person be in your drip campaign?</div>
+      <div class="subtitle" style="margin-bottom:0">That's it. Quick swipes. Let's walk through how.</div>
+      <button class="start-btn" onclick="nextObPage(2)">Next</button>
+      <div class="ob-dots"><span class="active"></span><span></span><span></span></div>
     </div>
 
-    <div class="step">
-      <div class="step-icon" style="border-color:#f44;color:#f44">&#10005;</div>
-      <div class="step-text"><strong>Swipe left or tap red</strong> — remove this person. They shouldn't be on our list.</div>
-    </div>
+    <!-- Page 2 -->
+    <div class="ob-page" id="ob-page-2" style="display:none">
+      <h1>Three choices</h1>
+      <div style="height:16px"></div>
 
-    <div class="step">
-      <div class="step-icon" style="border-color:#fa0;color:#fa0">&#9888;</div>
-      <div class="step-text"><strong>Swipe up or tap yellow</strong> — something's off. A popup will ask you what needs fixing. Use dictation to record your note.</div>
-    </div>
-
-    <h2>What you're looking at</h2>
-    <div class="step">
-      <div class="step-text" style="padding-top:0">Each card shows the contact's name, company, title, and contact info. The colored badge tells you how we classified them based on your email history and invoicing records. The <strong>intel brief</strong> is an AI-generated summary of your interaction history with this person.</div>
-    </div>
-
-    <h2>Tips</h2>
-    <div class="step">
-      <div class="step-text" style="padding-top:0">
-        You can undo your last swipe if you make a mistake.<br><br>
-        Don't overthink it — just confirm the ones that look right, flag the ones that need updating, and remove the ones that shouldn't be here. You can stop and come back anytime.
+      <div class="step">
+        <div class="step-icon" style="border-color:#0d5;color:#0d5">&#10003;</div>
+        <div class="step-text"><strong>Yes, keep them in.</strong><br>Swipe right or tap green. This person belongs in the drip.</div>
       </div>
+
+      <div class="step">
+        <div class="step-icon" style="border-color:#f44;color:#f44">&#10005;</div>
+        <div class="step-text"><strong>No, take them out.</strong><br>Swipe left or tap red. Not someone we need to stay in touch with.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="border-color:#fa0;color:#fa0">&#9888;</div>
+        <div class="step-text"><strong>It's complicated.</strong><br>Swipe up or tap yellow. A popup will let you dictate what we need to know.</div>
+      </div>
+
+      <button class="start-btn" onclick="nextObPage(3)">Next</button>
+      <div class="ob-dots"><span></span><span class="active"></span><span></span></div>
     </div>
 
-    <button class="start-btn" onclick="dismissOnboarding()">Let's Go</button>
+    <!-- Page 3 -->
+    <div class="ob-page" id="ob-page-3" style="display:none">
+      <h1>Quick tips</h1>
+      <div style="height:16px"></div>
+
+      <div class="step">
+        <div class="step-text" style="padding-top:0">Each card has an <strong>intel brief</strong> — a summary of your email history with this person. Read it, then decide.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-text" style="padding-top:0">Made a mistake? Tap <strong>Undo</strong> — it appears after each swipe.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-text" style="padding-top:0">You can <strong>stop anytime</strong> and come back. Your progress is saved.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-text" style="padding-top:0"><strong>Don't overthink it.</strong> Go with your gut. We can always fix things later.</div>
+      </div>
+
+      <button class="start-btn" onclick="dismissOnboarding()">Let's Go</button>
+      <div class="ob-dots"><span></span><span></span><span class="active"></span></div>
+    </div>
   </div>
 </div>
 
@@ -421,6 +461,12 @@ async function init() {
   }
 
   await loadContacts();
+}
+
+function nextObPage(page) {
+  document.querySelectorAll('.ob-page').forEach(p => p.style.display = 'none');
+  document.getElementById('ob-page-' + page).style.display = 'block';
+  document.getElementById('onboarding').scrollTop = 0;
 }
 
 function dismissOnboarding() {
