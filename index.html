@@ -328,17 +328,17 @@ async function loadContacts() {
 
     while (hasMore) {
       const { data, error } = await db
-        .from('contact_intel')
+        .from('contacts')
         .select(`
-          narrative, relationship_status, email_count, meeting_count, last_interaction,
-          contacts (
-            id, first_name, last_name, nickname, email, phone, mobile_phone, business_phone,
-            company, employer, job_title, nominator, linkedin_url,
-            client_status, client_years_active, client_last_invoiced
+          id, first_name, last_name, nickname, email, phone, mobile_phone, business_phone,
+          company, employer, job_title, nominator, linkedin_url, contact_owner,
+          client_status, client_years_active, client_last_invoiced,
+          contact_intel (
+            narrative, relationship_status, email_count, meeting_count, last_interaction
           )
         `)
-        .not('narrative', 'is', null)
-        .order('contact_id', { ascending: true })
+        .not('contact_owner', 'ilike', '%Bruckner%')
+        .order('id', { ascending: true })
         .range(from, from + batchSize - 1);
 
       if (error) {
@@ -346,18 +346,7 @@ async function loadContacts() {
         return;
       }
 
-      const reshaped = (data || []).map(row => {
-        const c = row.contacts || {};
-        c.contact_intel = {
-          narrative: row.narrative,
-          relationship_status: row.relationship_status,
-          email_count: row.email_count,
-          meeting_count: row.meeting_count,
-          last_interaction: row.last_interaction
-        };
-        return c;
-      }).filter(c => c.id && !reviewedIds.has(c.id));
-
+      const reshaped = (data || []).filter(c => c.id && !reviewedIds.has(c.id));
       allData = allData.concat(reshaped);
       if (!data || data.length < batchSize) hasMore = false;
       else from += batchSize;
