@@ -13,7 +13,6 @@ body {
   color: #fff;
   height: 100dvh;
   overflow: hidden;
-  touch-action: none;
 }
 
 .header {
@@ -26,19 +25,12 @@ body {
 .header h1 { font-size: 16px; font-weight: 600; }
 .counter { font-size: 13px; color: #888; }
 
-.progress-bar {
-  height: 3px;
-  background: #222;
-}
-.progress-fill {
-  height: 100%;
-  background: #4a9eff;
-  transition: width 0.3s;
-}
+.progress-bar { height: 3px; background: #222; }
+.progress-fill { height: 100%; background: #4a9eff; transition: width 0.3s; }
 
 .card-container {
   position: relative;
-  height: calc(100dvh - 39px - 3px - 70px);
+  height: calc(100dvh - 39px - 3px - 72px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -54,29 +46,9 @@ body {
   border: 1px solid #333;
   overflow-y: auto;
   max-height: 100%;
-  position: relative;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  touch-action: pan-y;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
-.card.swiping { transition: none; }
-.card.swipe-right { transform: translateX(150%) rotate(15deg); opacity: 0; }
-.card.swipe-left { transform: translateX(-150%) rotate(-15deg); opacity: 0; }
-.card.swipe-up { transform: translateY(-150%); opacity: 0; }
-
-.swipe-indicator {
-  position: absolute;
-  top: 12px;
-  padding: 6px 16px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  opacity: 0;
-  z-index: 10;
-  pointer-events: none;
-}
-.swipe-indicator.right { right: 12px; background: #0d5; color: #000; }
-.swipe-indicator.left { left: 12px; background: #f44; color: #fff; }
-.swipe-indicator.up { left: 50%; transform: translateX(-50%); background: #fa0; color: #000; }
+.card.out { transform: scale(0.92); opacity: 0; }
 
 .card-top {
   padding: 14px 16px 10px;
@@ -131,35 +103,39 @@ body {
 
 .actions {
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  padding: 8px 16px;
+  padding: 12px 10px;
   background: #111;
   border-top: 1px solid #222;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 70px;
+  height: 72px;
+  gap: 8px;
 }
 
 .action-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
+  flex: 1;
+  height: 46px;
+  border-radius: 10px;
   border: 2px solid;
   background: transparent;
-  font-size: 22px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
+  text-transform: uppercase;
 }
-.action-btn:active { transform: scale(0.9); }
-.btn-remove { border-color: #f44; color: #f44; }
-.btn-edit { border-color: #fa0; color: #fa0; }
-.btn-confirm { border-color: #0d5; color: #0d5; }
+.action-btn:active { opacity: 0.6; transform: scale(0.95); }
+.btn-no        { border-color: #f44; color: #f44; }
+.btn-evangelist{ border-color: #fa0; color: #fa0; }
+.btn-prospect  { border-color: #a855f7; color: #a855f7; }
+.btn-client    { border-color: #0d5; color: #0d5; }
 
 .loading {
   display: flex;
@@ -173,309 +149,178 @@ body {
 .undo-bar {
   display: none;
   position: fixed;
-  bottom: 78px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
+  background: #2a2a2a;
   color: #fff;
-  padding: 8px 20px;
+  padding: 9px 22px;
   border-radius: 20px;
   font-size: 14px;
   z-index: 50;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  animation: fadeIn 0.2s;
+  white-space: nowrap;
+  border: 1px solid #444;
 }
-.undo-bar.show { display: block; }
+.undo-bar.show { display: block; animation: fadeUp 0.2s ease; }
 .undo-bar span { color: #4a9eff; font-weight: 600; margin-left: 6px; }
-@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
 
-/* Onboarding */
-.onboarding-overlay {
+/* Sprint / state screens */
+.screen {
   display: none;
   position: fixed;
   inset: 0;
   background: #0a0a0a;
   z-index: 200;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.onboarding-overlay.show { display: block; }
-
-.onboarding {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 40px 24px 60px;
-}
-.onboarding h1 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.onboarding .subtitle {
-  font-size: 16px;
-  color: #888;
-  margin-bottom: 32px;
-  line-height: 1.5;
-}
-.onboarding h2 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 24px 0 12px;
-  color: #ccc;
-}
-.onboarding .step {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 20px;
-  align-items: flex-start;
-}
-.onboarding .step-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
+  padding: 32px 24px;
+  text-align: center;
 }
-.onboarding .step-text {
-  font-size: 15px;
-  line-height: 1.5;
-  color: #bbb;
-  padding-top: 8px;
-}
-.onboarding .step-text strong { color: #fff; }
+.screen.show { display: flex; }
 
-.onboarding .start-btn {
-  display: block;
+.screen-emoji { font-size: 52px; margin-bottom: 20px; }
+.screen h1 { font-size: 30px; font-weight: 800; margin-bottom: 10px; }
+.screen .sub { font-size: 15px; color: #888; line-height: 1.6; margin-bottom: 28px; max-width: 320px; }
+
+.big-num { font-size: 64px; font-weight: 800; color: #4a9eff; line-height: 1; }
+.big-label { font-size: 13px; color: #555; margin-top: 4px; margin-bottom: 28px; }
+
+.sprint-stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.ss-item { text-align: center; }
+.ss-num { font-size: 30px; font-weight: 800; line-height: 1; }
+.ss-num.green  { color: #0d5; }
+.ss-num.purple { color: #a855f7; }
+.ss-num.yellow { color: #fa0; }
+.ss-num.red    { color: #f44; }
+.ss-lbl { font-size: 11px; color: #555; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.screen-btn {
   width: 100%;
-  padding: 16px;
-  background: #4a9eff;
-  color: #000;
+  max-width: 300px;
+  padding: 15px;
   border: none;
   border-radius: 12px;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 32px;
   -webkit-tap-highlight-color: transparent;
 }
-.onboarding .start-btn:active { opacity: 0.8; }
+.screen-btn:active { opacity: 0.8; }
+.screen-btn.primary { background: #4a9eff; color: #000; }
+.screen-btn.ghost { background: transparent; color: #555; border: 1px solid #2a2a2a; margin-top: 10px; }
 
-.ob-page { min-height: calc(100dvh - 80px); }
-.ob-dots {
+.empty-state {
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
-}
-.ob-dots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #333;
-}
-.ob-dots span.active { background: #4a9eff; }
-
-.empty-state { text-align: center; padding: 40px; }
-.empty-state h2 { margin-bottom: 8px; }
-.empty-state p { color: #888; }
-
-/* Flag modal */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 100;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  height: 100%;
+  text-align: center;
+  padding: 40px;
+  color: #555;
 }
-.modal-overlay.show { display: flex; }
-
-.modal {
-  background: #1a1a1a;
-  border-radius: 16px;
-  border: 1px solid #333;
-  width: 100%;
-  max-width: 360px;
-  padding: 24px 20px;
-}
-.modal h3 {
-  font-size: 18px;
-  margin-bottom: 4px;
-}
-.modal p {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 16px;
-}
-.modal textarea {
-  width: 100%;
-  min-height: 100px;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 16px;
-  padding: 12px;
-  font-family: inherit;
-  resize: none;
-}
-.modal textarea::placeholder { color: #555; }
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-.modal-btn {
-  flex: 1;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.modal-btn.cancel { background: #333; color: #999; }
-.modal-btn.submit { background: #fa0; color: #000; }
+.empty-state h2 { color: #888; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
-<div class="onboarding-overlay" id="onboarding">
-  <div class="onboarding">
-    <!-- Page 1 -->
-    <div class="ob-page" id="ob-page-1">
-      <h1>Hey Byron</h1>
-      <div class="subtitle">We went through your HubSpot contacts, email history, and invoicing records and built a quick intel brief on each person.</div>
-      <div class="subtitle">Now we need your help with one simple question on each contact:</div>
-      <div style="text-align:center;font-size:22px;font-weight:700;color:#4a9eff;padding:20px 0 24px;line-height:1.4">Should this person be in your drip campaign?</div>
-      <div class="subtitle" style="margin-bottom:0">That's it. Quick swipes. Let's walk through how.</div>
-      <button class="start-btn" onclick="nextObPage(2)">Next</button>
-      <div class="ob-dots"><span class="active"></span><span></span><span></span></div>
-    </div>
+<!-- Sprint Start Screen -->
+<div class="screen" id="screen-start">
+  <div class="screen-emoji">🏃</div>
+  <h1 id="start-title">Sprint 1</h1>
+  <div class="big-num" id="start-count">500</div>
+  <div class="big-label" id="start-label">contacts this sprint</div>
+  <div class="sub" id="start-sub">Quick decisions only — Client, Prospect, Evangelist, or No. You can always undo the last one.</div>
+  <button class="screen-btn primary" onclick="startSprint()">Let's go</button>
+</div>
 
-    <!-- Page 2 -->
-    <div class="ob-page" id="ob-page-2" style="display:none">
-      <h1>Three choices</h1>
-      <div style="height:16px"></div>
-
-      <div class="step">
-        <div class="step-icon" style="border-color:#0d5;color:#0d5">&#10003;</div>
-        <div class="step-text"><strong>Yes, keep them in.</strong><br>Swipe right or tap green. This person belongs in the drip.</div>
-      </div>
-
-      <div class="step">
-        <div class="step-icon" style="border-color:#f44;color:#f44">&#10005;</div>
-        <div class="step-text"><strong>No, take them out.</strong><br>Swipe left or tap red. Not someone we need to stay in touch with.</div>
-      </div>
-
-      <div class="step">
-        <div class="step-icon" style="border-color:#fa0;color:#fa0">&#9888;</div>
-        <div class="step-text"><strong>It's complicated.</strong><br>Swipe up or tap yellow. A popup will let you dictate what we need to know.</div>
-      </div>
-
-      <button class="start-btn" onclick="nextObPage(3)">Next</button>
-      <div class="ob-dots"><span></span><span class="active"></span><span></span></div>
-    </div>
-
-    <!-- Page 3 -->
-    <div class="ob-page" id="ob-page-3" style="display:none">
-      <h1>Quick tips</h1>
-      <div style="height:16px"></div>
-
-      <div class="step">
-        <div class="step-text" style="padding-top:0">Each card has an <strong>intel brief</strong> — a summary of your email history with this person. Read it, then decide.</div>
-      </div>
-
-      <div class="step">
-        <div class="step-text" style="padding-top:0">Made a mistake? Tap <strong>Undo</strong> — it appears after each swipe.</div>
-      </div>
-
-      <div class="step">
-        <div class="step-text" style="padding-top:0">You can <strong>stop anytime</strong> and come back. Your progress is saved.</div>
-      </div>
-
-      <div class="step">
-        <div class="step-text" style="padding-top:0"><strong>Don't overthink it.</strong> Go with your gut. We can always fix things later.</div>
-      </div>
-
-      <button class="start-btn" onclick="dismissOnboarding()">Let's Go</button>
-      <div class="ob-dots"><span></span><span></span><span class="active"></span></div>
-    </div>
+<!-- Sprint Complete Screen -->
+<div class="screen" id="screen-complete">
+  <div class="screen-emoji">🎉</div>
+  <h1>Sprint done!</h1>
+  <div class="sub" id="complete-sub">Nice work. Here's what you sorted:</div>
+  <div class="sprint-stats">
+    <div class="ss-item"><div class="ss-num green"  id="sc-client">0</div><div class="ss-lbl">Client</div></div>
+    <div class="ss-item"><div class="ss-num purple" id="sc-prospect">0</div><div class="ss-lbl">Prospect</div></div>
+    <div class="ss-item"><div class="ss-num yellow" id="sc-evangelist">0</div><div class="ss-lbl">Evang.</div></div>
+    <div class="ss-item"><div class="ss-num red"    id="sc-no">0</div><div class="ss-lbl">No</div></div>
   </div>
+  <button class="screen-btn primary" id="btn-next-sprint" onclick="nextSprint()">Next Sprint</button>
+  <button class="screen-btn ghost" onclick="rest()">I'm done for now</button>
+</div>
+
+<!-- Rest Screen -->
+<div class="screen" id="screen-rest">
+  <div class="screen-emoji">☕</div>
+  <h1>Good work.</h1>
+  <div class="sub" id="rest-sub">Come back whenever you're ready for the next sprint.</div>
+</div>
+
+<!-- All Done Screen -->
+<div class="screen" id="screen-alldone">
+  <div class="screen-emoji">✅</div>
+  <h1>All caught up!</h1>
+  <div class="sub">No contacts left to review. Come back when there's a new batch.</div>
 </div>
 
 <div class="header">
   <h1>TMG Review</h1>
-  <div class="counter" id="counter">Loading...</div>
+  <div class="counter" id="counter"></div>
 </div>
 <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
 
 <div class="card-container" id="card-container">
-  <div class="loading" id="loading">Loading contacts...</div>
+  <div class="loading" id="loading">Loading contacts…</div>
 </div>
 
 <div class="actions">
-  <button class="action-btn btn-remove" onclick="handleAction('remove')">&#10005;</button>
-  <button class="action-btn btn-edit" onclick="showFlagModal()">&#9888;</button>
-  <button class="action-btn btn-confirm" onclick="handleAction('confirm')">&#10003;</button>
+  <button class="action-btn btn-no"         onclick="handleAction('no')">No</button>
+  <button class="action-btn btn-evangelist" onclick="handleAction('evangelist')">Evang.</button>
+  <button class="action-btn btn-prospect"   onclick="handleAction('prospect')">Prospect</button>
+  <button class="action-btn btn-client"     onclick="handleAction('client')">Client</button>
 </div>
 
 <div class="undo-bar" id="undo-bar" onclick="undoAction()">Undo<span id="undo-name"></span></div>
-
-<div class="modal-overlay" id="flag-modal">
-  <div class="modal">
-    <h3 id="modal-name"></h3>
-    <p>What should we know about this contact?</p>
-    <textarea id="flag-note" placeholder="Tap here and dictate what's wrong or what needs updating..."></textarea>
-    <div class="modal-actions">
-      <button class="modal-btn cancel" onclick="closeFlagModal()">Cancel</button>
-      <button class="modal-btn submit" onclick="submitFlag()">Flag It</button>
-    </div>
-  </div>
-</div>
 
 <script>
 const SUPABASE_URL = 'https://eacyaqvkfexqbauitczm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVhY3lhcXZrZmV4cWJhdWl0Y3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NjgwMzYsImV4cCI6MjA4OTM0NDAzNn0.oKCyrqMi8W7_59yM7TO1NxNU7ek0YaPtNf2_gDIFpnY';
 
+const SPRINT_SIZE = 500;
+
 let db;
-let contacts = [];
-let currentIndex = 0;
-let sessionStats = { confirmed: 0, removed: 0, flagged: 0 };
-let lastAction = null; // { contactId, action, index }
+let allContacts = [];
+let sprintContacts = [];
+let sprintIndex = 0;
+let sprintNumber = parseInt(localStorage.getItem('tmg_sprint_num') || '1');
+let sessionStats = { client: 0, prospect: 0, evangelist: 0, no: 0 };
+let lastAction = null;
 
 async function init() {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // Show onboarding on first visit
-  if (!localStorage.getItem('tmg_onboarded')) {
-    document.getElementById('onboarding').classList.add('show');
-  }
-
   await loadContacts();
-}
-
-function nextObPage(page) {
-  document.querySelectorAll('.ob-page').forEach(p => p.style.display = 'none');
-  document.getElementById('ob-page-' + page).style.display = 'block';
-  document.getElementById('onboarding').scrollTop = 0;
-}
-
-function dismissOnboarding() {
-  localStorage.setItem('tmg_onboarded', '1');
-  document.getElementById('onboarding').classList.remove('show');
 }
 
 async function loadContacts() {
   try {
+    // Fetch already-reviewed contact IDs (remove, flag, and new action types)
+    const { data: reviewed } = await db
+      .from('review_actions')
+      .select('contact_id');
+    const reviewedIds = new Set((reviewed || []).map(r => r.contact_id));
+
     let allData = [];
     let from = 0;
     const batchSize = 1000;
@@ -497,8 +342,7 @@ async function loadContacts() {
         .range(from, from + batchSize - 1);
 
       if (error) {
-        const el = document.getElementById('loading');
-        if (el) el.textContent = 'Error: ' + error.message;
+        document.getElementById('loading').textContent = 'Error: ' + error.message;
         return;
       }
 
@@ -512,287 +356,182 @@ async function loadContacts() {
           last_interaction: row.last_interaction
         };
         return c;
-      }).filter(c => c.id);
-      allData = allData.concat(reshaped);
+      }).filter(c => c.id && !reviewedIds.has(c.id));
 
+      allData = allData.concat(reshaped);
       if (!data || data.length < batchSize) hasMore = false;
       else from += batchSize;
     }
 
-    // Sort alphabetically by last name
     allData.sort((a, b) => {
       const la = (a.last_name || '').toLowerCase();
       const lb = (b.last_name || '').toLowerCase();
-      if (la < lb) return -1;
-      if (la > lb) return 1;
+      if (la < lb) return -1; if (la > lb) return 1;
       const fa = (a.first_name || '').toLowerCase();
       const fb = (b.first_name || '').toLowerCase();
       return fa < fb ? -1 : fa > fb ? 1 : 0;
     });
 
-    contacts = allData.filter(c => {
+    allContacts = allData.filter(c => {
       const first = (c.first_name || '').trim();
-      const last = (c.last_name || '').trim();
+      const last  = (c.last_name  || '').trim();
       if (!first && !last) return false;
       if (/^\d{7,}$/.test(last.replace(/\D/g, ''))) return false;
       return true;
     });
 
-    renderCard();
+    document.getElementById('loading').style.display = 'none';
+
+    if (allContacts.length === 0) {
+      document.getElementById('screen-alldone').classList.add('show');
+      return;
+    }
+
+    prepareSprint();
   } catch (err) {
-    const el = document.getElementById('loading');
-    if (el) el.textContent = 'Error: ' + err.message;
+    document.getElementById('loading').textContent = 'Error: ' + err.message;
   }
+}
+
+function prepareSprint() {
+  sprintContacts = allContacts.slice(0, SPRINT_SIZE);
+  sprintIndex = 0;
+  sessionStats = { client: 0, prospect: 0, evangelist: 0, no: 0 };
+  lastAction = null;
+
+  const remaining = allContacts.length;
+  const sprintsLeft = Math.ceil(remaining / SPRINT_SIZE);
+  const thisSize = sprintContacts.length;
+
+  document.getElementById('start-title').textContent = 'Sprint ' + sprintNumber;
+  document.getElementById('start-count').textContent = thisSize;
+  document.getElementById('start-label').textContent =
+    'contacts this sprint · ' + remaining + ' total' +
+    (sprintsLeft > 1 ? ' (~' + sprintsLeft + ' sprints)' : '');
+
+  document.getElementById('screen-start').classList.add('show');
+}
+
+function startSprint() {
+  document.getElementById('screen-start').classList.remove('show');
+  renderCard();
 }
 
 function renderCard() {
   const container = document.getElementById('card-container');
-  const total = contacts.length;
+  const total = sprintContacts.length;
 
-  document.getElementById('counter').textContent =
-    (currentIndex + 1) + ' / ' + total + '  (' + sessionStats.confirmed + '✓ ' + sessionStats.removed + '✗ ' + sessionStats.flagged + '⚑)';
-  document.getElementById('progress').style.width = (total > 0 ? ((currentIndex / total) * 100) : 0) + '%';
-
-  if (total === 0 || currentIndex >= total) {
-    container.innerHTML = '<div class="empty-state"><h2>All done!</h2><p>No more contacts to review.</p></div>';
+  if (sprintIndex >= total) {
+    showSprintComplete();
     return;
   }
 
-  const c = contacts[currentIndex];
-  const intel = c.contact_intel ? (Array.isArray(c.contact_intel) ? c.contact_intel[0] : c.contact_intel) : null;
-  const phone = c.mobile_phone || c.phone || c.business_phone || '';
+  document.getElementById('counter').textContent =
+    'Sprint ' + sprintNumber + ' · ' + (sprintIndex + 1) + ' / ' + total;
+  document.getElementById('progress').style.width =
+    (total > 0 ? (sprintIndex / total) * 100 : 0) + '%';
+
+  const c = sprintContacts[sprintIndex];
+  const intel = c.contact_intel
+    ? (Array.isArray(c.contact_intel) ? c.contact_intel[0] : c.contact_intel)
+    : null;
+  const phone   = c.mobile_phone || c.phone || c.business_phone || '';
   const company = c.company || c.employer || '';
 
-  // Badge priority: invoicing data > AI classification
-  let badgeClass = '';
-  let badgeText = '';
+  let badgeClass = '', badgeText = '';
   if (c.client_status === 'current_client') {
-    badgeText = 'Client' + (c.client_years_active ? ' · ' + c.client_years_active + ' yrs' : '');
+    badgeText  = 'Client' + (c.client_years_active ? ' · ' + c.client_years_active + ' yrs' : '');
     badgeClass = 'current_client';
   } else if (c.client_status === 'past_client') {
-    badgeText = 'Past Client' + (c.client_last_invoiced ? ' · last ' + c.client_last_invoiced : '');
+    badgeText  = 'Past Client' + (c.client_last_invoiced ? ' · last ' + c.client_last_invoiced : '');
     badgeClass = 'past_client';
   } else if (intel && intel.relationship_status) {
     badgeText = intel.relationship_status.replace(/_/g, ' ');
-    if (intel.relationship_status === 'active_client') badgeClass = 'current_client';
-    else if (intel.relationship_status === 'warm_lead') badgeClass = 'warm_lead';
-    else if (intel.relationship_status === 'cold_lead') badgeClass = 'cold_lead';
-    else if (intel.relationship_status === 'referral_source') badgeClass = 'referral';
-    else if (intel.relationship_status === 'internal') badgeClass = 'internal';
-    else if (intel.relationship_status === 'unknown') badgeClass = 'cold_lead';
-    else badgeClass = 'prospect';
+    const rs = intel.relationship_status;
+    if      (rs === 'active_client')    badgeClass = 'current_client';
+    else if (rs === 'warm_lead')        badgeClass = 'warm_lead';
+    else if (rs === 'cold_lead')        badgeClass = 'cold_lead';
+    else if (rs === 'referral_source')  badgeClass = 'referral';
+    else if (rs === 'internal')         badgeClass = 'internal';
+    else if (rs === 'unknown')          badgeClass = 'cold_lead';
+    else                                badgeClass = 'prospect';
   }
 
-  // Build meta line
   let metaParts = [];
-  if (company) metaParts.push('<span class="company">' + esc(company) + '</span>');
+  if (company)     metaParts.push('<span class="company">' + esc(company) + '</span>');
   if (c.job_title) metaParts.push(esc(c.job_title));
 
-  // Data completeness dots
   let dots = '';
-  dots += '<span style="color:' + (c.email ? '#0d5' : '#333') + '">Email</span> · ';
-  dots += '<span style="color:' + (phone ? '#0d5' : '#333') + '">Phone</span> · ';
-  dots += '<span style="color:' + (c.linkedin_url ? '#0d5' : '#333') + '">LinkedIn</span> · ';
+  dots += '<span style="color:' + (c.email            ? '#0d5' : '#333') + '">Email</span> · ';
+  dots += '<span style="color:' + (phone              ? '#0d5' : '#333') + '">Phone</span> · ';
+  dots += '<span style="color:' + (c.linkedin_url     ? '#0d5' : '#333') + '">LinkedIn</span> · ';
   dots += '<span style="color:' + (intel && intel.narrative ? '#0d5' : '#333') + '">Intel</span>';
 
-  // Build info rows
   let infoRows = '';
-  if (c.email) infoRows += infoRow('Email', '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>');
-  if (phone) infoRows += infoRow('Phone', '<a href="tel:' + esc(phone) + '">' + esc(phone) + '</a>');
-  if (c.linkedin_url) infoRows += infoRow('LinkedIn', '<a href="' + esc(c.linkedin_url) + '" target="_blank">Profile</a>');
-  if (c.nominator) infoRows += infoRow('Referred', esc(c.nominator));
-  if (intel && intel.last_interaction) infoRows += infoRow('Last', esc(intel.last_interaction));
+  if (c.email)             infoRows += row('Email',    '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>');
+  if (phone)               infoRows += row('Phone',    '<a href="tel:' + esc(phone) + '">' + esc(phone) + '</a>');
+  if (c.linkedin_url)      infoRows += row('LinkedIn', '<a href="' + esc(c.linkedin_url) + '" target="_blank">Profile</a>');
+  if (c.nominator)         infoRows += row('Referred', esc(c.nominator));
+  if (intel && intel.last_interaction) infoRows += row('Last', esc(intel.last_interaction));
 
-  let html = `
+  container.innerHTML = `
     <div class="card" id="active-card">
-      <div class="swipe-indicator right" id="ind-right">CONFIRM</div>
-      <div class="swipe-indicator left" id="ind-left">REMOVE</div>
-      <div class="swipe-indicator up" id="ind-up">FLAG</div>
-
       <div class="card-top">
         <h2>${esc(c.first_name || '')} ${esc(c.last_name || '')}</h2>
         ${metaParts.length ? '<div class="meta">' + metaParts.join(' · ') + '</div>' : ''}
         ${badgeText ? '<div class="badge ' + badgeClass + '">' + esc(badgeText) + '</div>' : ''}
       </div>
-
       <div class="card-info">
         <div class="data-dots">${dots}</div>
         ${infoRows}
       </div>
-
       <div class="intel">${intel && intel.narrative ? formatNarrative(intel.narrative) : '<span style="color:#555">No intel available</span>'}</div>
     </div>`;
-
-  function infoRow(label, value) {
-    return '<div class="info-row"><div class="info-label">' + label + '</div><div class="info-value">' + value + '</div></div>';
-  }
-
-  container.innerHTML = html;
-  setupSwipeGestures();
 }
 
-function formatNarrative(text) {
-  return esc(text).replace(/\n/g, '<br>');
+function row(label, value) {
+  return '<div class="info-row"><div class="info-label">' + label + '</div><div class="info-value">' + value + '</div></div>';
 }
-
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-// --- Swipe ---
-let startX, startY, isDragging = false;
-
-function setupSwipeGestures() {
-  const card = document.getElementById('active-card');
-  if (!card) return;
-  card.addEventListener('touchstart', onTouchStart, { passive: true });
-  card.addEventListener('touchmove', onTouchMove, { passive: false });
-  card.addEventListener('touchend', onTouchEnd);
-  card.addEventListener('mousedown', onMouseDown);
-}
-
-function onTouchStart(e) {
-  const t = e.touches[0];
-  startX = t.clientX;
-  startY = t.clientY;
-  isDragging = true;
-  const card = document.getElementById('active-card');
-  if (card) card.classList.add('swiping');
-}
-
-function onTouchMove(e) {
-  if (!isDragging) return;
-  e.preventDefault();
-  const t = e.touches[0];
-  updateCardPosition(t.clientX - startX, t.clientY - startY);
-}
-
-function onTouchEnd(e) {
-  if (!isDragging) return;
-  isDragging = false;
-  const card = document.getElementById('active-card');
-  if (!card) return;
-  card.classList.remove('swiping');
-  const t = e.changedTouches[0];
-  const dx = t.clientX - startX;
-  const dy = t.clientY - startY;
-  if (dx > 100) handleAction('confirm');
-  else if (dx < -100) handleAction('remove');
-  else if (dy < -100) showFlagModal();
-  else { card.style.transform = ''; hideIndicators(); }
-}
-
-function onMouseDown(e) {
-  startX = e.clientX;
-  startY = e.clientY;
-  isDragging = true;
-  const card = document.getElementById('active-card');
-  if (card) card.classList.add('swiping');
-  const onMove = (ev) => { if (isDragging) updateCardPosition(ev.clientX - startX, ev.clientY - startY); };
-  const onUp = (ev) => {
-    isDragging = false;
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
-    const card = document.getElementById('active-card');
-    if (!card) return;
-    card.classList.remove('swiping');
-    const dx = ev.clientX - startX;
-    const dy = ev.clientY - startY;
-    if (dx > 100) handleAction('confirm');
-    else if (dx < -100) handleAction('remove');
-    else if (dy < -100) showFlagModal();
-    else { card.style.transform = ''; hideIndicators(); }
-  };
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup', onUp);
-}
-
-function updateCardPosition(dx, dy) {
-  const card = document.getElementById('active-card');
-  if (!card) return;
-  card.style.transform = 'translateX(' + dx + 'px) translateY(' + Math.min(dy, 0) + 'px) rotate(' + (dx * 0.05) + 'deg)';
-  const r = document.getElementById('ind-right');
-  const l = document.getElementById('ind-left');
-  const u = document.getElementById('ind-up');
-  if (r) r.style.opacity = Math.max(0, Math.min(1, dx / 100));
-  if (l) l.style.opacity = Math.max(0, Math.min(1, -dx / 100));
-  if (u) u.style.opacity = Math.max(0, Math.min(1, -dy / 100));
-}
-
-function hideIndicators() {
-  ['ind-right', 'ind-left', 'ind-up'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.opacity = 0;
-  });
-}
-
-// --- Flag Modal ---
-function showFlagModal() {
-  const c = contacts[currentIndex];
-  if (!c) return;
-  document.getElementById('modal-name').textContent = (c.first_name || '') + ' ' + (c.last_name || '');
-  document.getElementById('flag-note').value = '';
-  document.getElementById('flag-modal').classList.add('show');
-  setTimeout(() => document.getElementById('flag-note').focus(), 100);
-}
-
-function closeFlagModal() {
-  document.getElementById('flag-modal').classList.remove('show');
-  const card = document.getElementById('active-card');
-  if (card) { card.style.transform = ''; hideIndicators(); }
-}
-
-function submitFlag() {
-  const note = document.getElementById('flag-note').value;
-  document.getElementById('flag-modal').classList.remove('show');
-  handleAction('flag', note);
-}
+function formatNarrative(text) { return esc(text).replace(/\n/g, '<br>'); }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 // --- Actions ---
-async function handleAction(action, note) {
-  if (currentIndex >= contacts.length) return;
-  const c = contacts[currentIndex];
+async function handleAction(action) {
+  if (sprintIndex >= sprintContacts.length) return;
+  const c = sprintContacts[sprintIndex];
 
   const card = document.getElementById('active-card');
-  if (card) {
-    card.classList.remove('swiping');
-    if (action === 'confirm') card.classList.add('swipe-right');
-    else if (action === 'remove') card.classList.add('swipe-left');
-    else card.classList.add('swipe-up');
-  }
+  if (card) card.classList.add('out');
 
   await db.from('review_actions').insert({
     contact_id: c.id,
-    action: action,
-    note: note || null,
+    action,
+    note: null,
     reviewed_at: new Date().toISOString()
   });
 
-  if (action === 'confirm') sessionStats.confirmed++;
-  else if (action === 'remove') sessionStats.removed++;
-  else sessionStats.flagged++;
-
-  lastAction = { contactId: c.id, action: action, index: currentIndex, name: (c.first_name || '') + ' ' + (c.last_name || '') };
+  sessionStats[action]++;
+  lastAction = {
+    contactId: c.id,
+    action,
+    index: sprintIndex,
+    name: ((c.first_name || '') + ' ' + (c.last_name || '')).trim()
+  };
 
   setTimeout(() => {
-    currentIndex++;
+    sprintIndex++;
     renderCard();
-    // Show undo bar
     const undo = document.getElementById('undo-bar');
-    document.getElementById('undo-name').textContent = lastAction.name;
+    document.getElementById('undo-name').textContent = ' ' + lastAction.name;
     undo.classList.add('show');
-    // Auto-hide after 5 seconds
     clearTimeout(window._undoTimer);
-    window._undoTimer = setTimeout(() => { undo.classList.remove('show'); }, 5000);
-  }, 300);
+    window._undoTimer = setTimeout(() => undo.classList.remove('show'), 5000);
+  }, 200);
 }
 
 async function undoAction() {
   if (!lastAction) return;
 
-  // Delete the last review action from DB
   await db.from('review_actions')
     .delete()
     .eq('contact_id', lastAction.contactId)
@@ -800,16 +539,52 @@ async function undoAction() {
     .order('reviewed_at', { ascending: false })
     .limit(1);
 
-  // Reverse the stat
-  if (lastAction.action === 'confirm') sessionStats.confirmed--;
-  else if (lastAction.action === 'remove') sessionStats.removed--;
-  else sessionStats.flagged--;
-
-  // Go back
-  currentIndex = lastAction.index;
+  sessionStats[lastAction.action] = Math.max(0, sessionStats[lastAction.action] - 1);
+  sprintIndex = lastAction.index;
   lastAction = null;
   document.getElementById('undo-bar').classList.remove('show');
   renderCard();
+}
+
+// --- Sprint complete ---
+function showSprintComplete() {
+  document.getElementById('sc-client').textContent    = sessionStats.client;
+  document.getElementById('sc-prospect').textContent  = sessionStats.prospect;
+  document.getElementById('sc-evangelist').textContent= sessionStats.evangelist;
+  document.getElementById('sc-no').textContent        = sessionStats.no;
+
+  const remaining = allContacts.length - sprintContacts.length;
+  const btn = document.getElementById('btn-next-sprint');
+  if (remaining > 0) {
+    btn.style.display = '';
+    btn.textContent = 'Next Sprint (' + remaining + ' left)';
+  } else {
+    btn.style.display = 'none';
+  }
+
+  localStorage.setItem('tmg_sprint_num', String(sprintNumber + 1));
+  document.getElementById('screen-complete').classList.add('show');
+}
+
+function nextSprint() {
+  document.getElementById('screen-complete').classList.remove('show');
+  sprintNumber++;
+  allContacts = allContacts.slice(SPRINT_SIZE);
+  if (allContacts.length === 0) {
+    document.getElementById('screen-alldone').classList.add('show');
+  } else {
+    prepareSprint();
+  }
+}
+
+function rest() {
+  const remaining = allContacts.length - sprintContacts.length;
+  document.getElementById('rest-sub').textContent =
+    remaining > 0
+      ? remaining + ' contacts still waiting. Come back whenever you\u2019re ready.'
+      : 'Come back whenever you\u2019re ready for the next sprint.';
+  document.getElementById('screen-complete').classList.remove('show');
+  document.getElementById('screen-rest').classList.add('show');
 }
 
 init();
