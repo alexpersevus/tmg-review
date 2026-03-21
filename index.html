@@ -376,10 +376,40 @@ async function loadContacts() {
       return;
     }
 
+    // Resume saved sprint if any contacts from it are still unreviewed
+    const savedIds = JSON.parse(localStorage.getItem('tmg_sprint_ids') || 'null');
+    if (savedIds) {
+      const savedSet = new Set(savedIds);
+      const contactMap = new Map(allContacts.map(c => [c.id, c]));
+      const resumeContacts = savedIds.map(id => contactMap.get(id)).filter(Boolean);
+      if (resumeContacts.length > 0) {
+        // Remove these from allContacts so next sprint doesn't re-show them
+        allContacts = allContacts.filter(c => !savedSet.has(c.id));
+        resumeSprint(resumeContacts);
+        return;
+      } else {
+        localStorage.removeItem('tmg_sprint_ids');
+      }
+    }
+
     prepareSprint();
   } catch (err) {
     document.getElementById('loading').textContent = 'Error: ' + err.message;
   }
+}
+
+function resumeSprint(contacts) {
+  sprintContacts = contacts;
+  sprintIndex = 0;
+  sessionStats = { client: 0, prospect: 0, evangelist: 0, no: 0 };
+  lastAction = null;
+
+  const remaining = allContacts.length;
+  document.getElementById('start-title').textContent = 'Sprint ' + sprintNumber + ' (resumed)';
+  document.getElementById('start-count').textContent = contacts.length;
+  document.getElementById('start-label').textContent =
+    'contacts left in this sprint · ' + remaining + ' more after';
+  document.getElementById('screen-start').classList.add('show');
 }
 
 function prepareSprint() {
@@ -402,6 +432,8 @@ function prepareSprint() {
 }
 
 function startSprint() {
+  // Save this sprint's IDs so we can resume if the user leaves mid-sprint
+  localStorage.setItem('tmg_sprint_ids', JSON.stringify(sprintContacts.map(c => c.id)));
   document.getElementById('screen-start').classList.remove('show');
   renderCard();
 }
@@ -552,6 +584,7 @@ function showSprintComplete() {
   }
 
   localStorage.setItem('tmg_sprint_num', String(sprintNumber + 1));
+  localStorage.removeItem('tmg_sprint_ids');
   document.getElementById('screen-complete').classList.add('show');
 }
 
