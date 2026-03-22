@@ -212,10 +212,19 @@ async function init() {
 
 async function loadContacts() {
   try {
-    const { data: reviewed } = await db
-      .from('review_actions')
-      .select('contact_id');
-    const reviewedIds = new Set((reviewed || []).map(r => r.contact_id));
+    let reviewedAll = [];
+    let rFrom = 0;
+    let rMore = true;
+    while (rMore) {
+      const { data: rData } = await db
+        .from('review_actions')
+        .select('contact_id')
+        .range(rFrom, rFrom + 999);
+      if (rData && rData.length > 0) reviewedAll = reviewedAll.concat(rData);
+      if (!rData || rData.length < 1000) rMore = false;
+      else rFrom += 1000;
+    }
+    const reviewedIds = new Set(reviewedAll.map(r => r.contact_id));
 
     let allData = [];
     let from = 0;
